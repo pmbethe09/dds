@@ -1,0 +1,51 @@
+# Import of DoubleDummySolver from github
+cc_library(
+    name = "dds",
+    srcs = glob([
+        "src/*.cpp",
+        "src/*.h",
+        "include/portab.h",
+    ]),
+    hdrs = glob(["include/dll.h"]),
+    copts = ["-Wno-all"],
+    linkopts = ["-lm"],
+    visibility = ["//visibility:public"],
+)
+
+TEST_MAINS = [
+    "test/dtest.cpp",
+    "test/itest.cpp",
+]
+
+cc_library(
+    name = "tests",
+    srcs = glob(
+        [
+            "test/*.cpp",
+            "test/*.h",
+        ],
+        exclude = TEST_MAINS,
+    ),
+    copts = ["-Wno-all"],
+    linkopts = ["-lm"],
+    visibility = ["//visibility:public"],
+    deps = [":dds"],
+)
+
+cc_binary(
+    name = "dtest",
+    srcs = ["test/dtest.cpp"],
+    deps = [
+        "dds",
+        ":tests",
+    ],
+)
+
+cc_binary(
+    name = "itest",
+    srcs = ["test/itest.cpp"],
+    deps = [
+        "dds",
+        ":tests",
+    ],
+)
